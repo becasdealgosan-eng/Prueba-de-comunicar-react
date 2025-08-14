@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { FC, ReactNode, useState, useEffect } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+// Caja que muestra la lista
+type CajaProps = {
+  items: string[];
+};
+
+const Caja: FC<CajaProps> = ({ items }) => (
+  <div style={{ border: "1px solid #ccc", padding: "8px" }}>
+    <ul>
+      {items.map((item, i) => (
+        <li key={i}>{item}</li>
+      ))}
+    </ul>
+  </div>
+);
+
+const App: FC = () => {
+  const [lista, setLista] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5234/api/lista")
+      .then((res) => res.json())
+      .then((data) => setLista(data))
+      .catch((err) => console.error("Error al obtener lista:", err));
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div style={{ padding: "16px", fontFamily: "sans-serif" }}>
+      <h1>Lista desde API C#</h1>
+      <Caja items={lista} />
+    </div>
+  );
+};
 
-export default App
+export default App;

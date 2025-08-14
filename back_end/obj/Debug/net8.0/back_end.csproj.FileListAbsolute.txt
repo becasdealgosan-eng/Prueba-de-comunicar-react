@@ -26,7 +26,6 @@ C:\Users\onall\OneDrive\Documentos\programs\csharp\conjunto\back_end\obj\Debug\n
 C:\Users\onall\OneDrive\Documentos\programs\csharp\conjunto\back_end\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\onall\OneDrive\Documentos\programs\csharp\conjunto\back_end\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\onall\OneDrive\Documentos\programs\csharp\conjunto\back_end\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\onall\OneDrive\Documentos\programs\csharp\conjunto\back_end\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\onall\OneDrive\Documentos\programs\csharp\conjunto\back_end\obj\Debug\net8.0\back_end.csproj.Up2Date
 C:\Users\onall\OneDrive\Documentos\programs\csharp\conjunto\back_end\obj\Debug\net8.0\back_end.dll
 C:\Users\onall\OneDrive\Documentos\programs\csharp\conjunto\back_end\obj\Debug\net8.0\refint\back_end.dll
