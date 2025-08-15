@@ -1,25 +1,67 @@
-import React, { FC, useState, useEffect } from "react";
+// src/App.tsx
+import React, { useEffect, useState } from "react";
+import { CallApi } from "./CallApi";
 
-const App: FC = () => {
-  const [contador, setContador] = useState<number>(0);
+export default function App() {
+  const API_BASE = "http://localhost:5234/api";
 
+  const [contadorRecibido, setContadorRecibido] = useState<number>(0);
+  const [mensajeRecibido, setMensajeRecibido] = useState<string>("");
+
+  const [contadorEnviar, setContadorEnviar] = useState<number>(0);
+  const [mensajeEnviar, setMensajeEnviar] = useState<string>("");
+
+  // Actualiza datos cada segundo
   useEffect(() => {
-    const intervalo = setInterval(() => {
-      fetch("http://localhost:5234/api/robot/posicion")
-        .then((res) => res.json())
-        .then((data) => setContador(Number(data)))
-        .catch((err) => console.error("Error al obtener contador:", err));
-    }, 1000); // cada 1 segundo
+    const fetchData = async () => {
+      const contador = await CallApi(`${API_BASE}/contador`, "SEND");
+      const mensaje = await CallApi(`${API_BASE}/mensaje`, "SEND");
+      setContadorRecibido(contador);
+      setMensajeRecibido(mensaje);
+    };
 
-    return () => clearInterval(intervalo);
+    fetchData();
+    const interval = setInterval(fetchData, 1000);
+    return () => clearInterval(interval);
   }, []);
 
+  const enviarDatos = async () => {
+    await CallApi(`${API_BASE}/contador`, "POST", contadorEnviar);
+    await CallApi(`${API_BASE}/mensaje`, "POST", mensajeEnviar);
+  };
+
   return (
-    <div style={{ padding: "16px", fontFamily: "sans-serif" }}>
-      <h1>Contador en vivo</h1>
-      <div style={{ fontSize: "2rem", fontWeight: "bold" }}>{contador}</div>
+    <div style={{ display: "flex", gap: "2rem", padding: "2rem" }}>
+      {/* Lado izquierdo: recibido de C# */}
+      <div style={{ flex: 1, border: "1px solid #ccc", padding: "1rem" }}>
+        <h2>Recibido (C#)</h2>
+        <p><strong>Contador:</strong> {contadorRecibido}</p>
+        <p><strong>Mensaje:</strong> {mensajeRecibido}</p>
+      </div>
+
+      {/* Lado derecho: enviar a C# */}
+      <div style={{ flex: 1, border: "1px solid #ccc", padding: "1rem" }}>
+        <h2>Enviar (editable)</h2>
+        <label>
+          Contador:
+          <input
+            type="number"
+            value={contadorEnviar}
+            onChange={(e) => setContadorEnviar(Number(e.target.value))}
+          />
+        </label>
+        <br /><br />
+        <label>
+          Mensaje:
+          <input
+            type="text"
+            value={mensajeEnviar}
+            onChange={(e) => setMensajeEnviar(e.target.value)}
+          />
+        </label>
+        <br /><br />
+        <button onClick={enviarDatos}>Enviar a C#</button>
+      </div>
     </div>
   );
-};
-
-export default App;
+}
