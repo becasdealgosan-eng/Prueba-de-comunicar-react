@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+
 // Permitir cualquier origen
 builder.Services.AddCors(options =>
 {
@@ -20,6 +21,13 @@ var app = builder.Build();
 // Activar la política antes de mapear rutas
 app.UseCors("TodosPuedenEntrar");
 
+// Crear diccionario (la clase se declara más abajo)
+Dictionary<int, RobotInfo> robots = new()
+{
+    { 123456, new RobotInfo { X = 10.5, Y = 20.3, Grados = 90, Nombre = "Robot A" } },
+    { 654321, new RobotInfo { X = 5.2, Y = 7.8, Grados = 180, Nombre = "Robot B" } }
+};
+
 // Función para registrar un endpoint dinámico
 void GenerarAPI(string ruta, Func<object> obtenerDatoActual)
 {
@@ -32,6 +40,16 @@ void GenerarAPI(string ruta, Func<object> obtenerDatoActual)
         });
     });
 }
+
+// Endpoint que devuelve un robot por id
+app.MapGet("/api/robot/info/{id:int}", (int id) =>
+{
+    if (robots.TryGetValue(id, out var info))
+    {
+        return Results.Json(info, new JsonSerializerOptions { WriteIndented = true });
+    }
+    return Results.NotFound(new { Error = "Robot no encontrado" });
+});
 
 // Ejemplo de variable que puede cambiar
 int contador = 0;
@@ -50,3 +68,12 @@ _ = Task.Run(async () =>
 });
 
 app.Run("http://localhost:5234");
+
+// --- CLASES FUERA DEL BLOQUE PRINCIPAL ---
+public class RobotInfo
+{
+    public double X { get; set; }
+    public double Y { get; set; }
+    public double Grados { get; set; }
+    public string Nombre { get; set; } = "";
+}
