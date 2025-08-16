@@ -1,34 +1,17 @@
-// src/App.tsx
-import React, { useEffect, useState } from "react";
-import { CallApi } from "./CallApi";
+import React from "react";
+import { useApiData } from "./useApiData";
 
 export default function App() {
   const API_BASE = "http://localhost:5234/api";
-
-  const [contadorRecibido, setContadorRecibido] = useState<number>(0);
-  const [mensajeRecibido, setMensajeRecibido] = useState<string>("");
-
-  const [contadorEnviar, setContadorEnviar] = useState<number>(0);
-  const [mensajeEnviar, setMensajeEnviar] = useState<string>("");
-
-  // Actualiza datos cada segundo
-  useEffect(() => {
-    const fetchData = async () => {
-      const contador = await CallApi(`${API_BASE}/contador`, "SEND");
-      const mensaje = await CallApi(`${API_BASE}/mensaje`, "SEND");
-      setContadorRecibido(contador);
-      setMensajeRecibido(mensaje);
-    };
-
-    fetchData();
-    const interval = setInterval(fetchData, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const enviarDatos = async () => {
-    await CallApi(`${API_BASE}/contador`, "POST", contadorEnviar);
-    await CallApi(`${API_BASE}/mensaje`, "POST", mensajeEnviar);
-  };
+  const {
+    contadorRecibido,
+    mensajeRecibido,
+    contadorEnviar,
+    mensajeEnviar,
+    setContadorEnviar,
+    setMensajeEnviar,
+    enviarDatos,
+  } = useApiData(API_BASE);
 
   return (
     <div style={{ display: "flex", gap: "2rem", padding: "2rem" }}>
